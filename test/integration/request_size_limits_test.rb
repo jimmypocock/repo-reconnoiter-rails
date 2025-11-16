@@ -60,22 +60,8 @@ class RequestSizeLimitsTest < ActionDispatch::IntegrationTest
     assert_equal 1048576, json["error"]["max_size_bytes"]
   end
 
-  test "request size limit only applies to API endpoints" do
-    # Large POST to non-API endpoint should not be blocked by our middleware
-    # (Rails has its own limits, but our middleware only checks /api/v1/*)
-    large_payload = "x" * (2 * 1024 * 1024)  # 2MB
-
-    # POST to a non-API route (comparisons creation is a web route, not API)
-    # This should not trigger our RequestSizeLimiter middleware
-    # Note: This will fail for other reasons (authentication, validation, etc.)
-    # but NOT because of payload size
-    post comparisons_path,
-         params: { user_query: large_payload },
-         headers: { "Content-Length" => large_payload.bytesize.to_s }
-
-    # Should get redirected to login or get 422, NOT 413
-    assert_not_equal 413, response.status, "Web UI requests should not be blocked by RequestSizeLimiter"
-  end
+  # Note: RequestSizeLimiter only applies to API endpoints (/api/v1/*)
+  # Since we removed all non-API routes, this is automatically enforced
 
   test "request size check happens before authentication" do
     # Large payload without API key - should get 413, not 401

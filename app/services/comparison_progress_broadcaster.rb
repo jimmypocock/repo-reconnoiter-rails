@@ -29,7 +29,7 @@ class ComparisonProgressBroadcaster
     payload = {
       type: "complete",
       comparison_id: comparison_id,
-      redirect_url: Rails.application.routes.url_helpers.comparison_path(comparison_id),
+      comparison_url: Rails.application.routes.url_helpers.v1_comparison_url(comparison_id),
       message: "Analysis complete!",
       timestamp: Time.current.iso8601
     }

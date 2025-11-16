@@ -60,8 +60,19 @@ Rails.application.configure do
 
   # Enable verbose logging for Solid Queue in development
   config.log_level = :debug
-  config.solid_queue.logger = ActiveSupport::Logger.new(STDOUT)
-  config.solid_queue.logger.level = Logger::INFO
+
+  # Log to both file and STDOUT so bin/dev shows worker job logs
+  stdout_logger = ActiveSupport::Logger.new(STDOUT)
+  stdout_logger.formatter = ActiveSupport::Logger::SimpleFormatter.new
+
+  file_logger = ActiveSupport::Logger.new(Rails.root.join("log", "development.log"))
+  file_logger.formatter = ActiveSupport::Logger::SimpleFormatter.new
+
+  # Broadcast to both destinations
+  config.logger = ActiveSupport::BroadcastLogger.new(stdout_logger, file_logger)
+
+  # Solid Queue uses main Rails logger
+  config.solid_queue.logger = config.logger
 
   # Highlight code that triggered redirect in logs.
   config.action_dispatch.verbose_redirect_logs = true
@@ -78,6 +89,10 @@ Rails.application.configure do
   # Allow Action Cable access from any localhost port in development
   config.action_cable.disable_request_forgery_protection = true
   config.action_cable.allowed_request_origins = [ /http:\/\/localhost:\d+/, /http:\/\/127\.0\.0\.1:\d+/ ]
+
+  # Default URL options for url helpers (used in background jobs, mailers, etc.)
+  config.action_mailer.default_url_options = { host: "localhost", port: 3001, protocol: "http" }
+  Rails.application.routes.default_url_options = { host: "localhost", port: 3001, protocol: "http" }
 
   # Raise error when a before_action's only/except options reference missing actions.
   config.action_controller.raise_on_missing_callback_actions = true

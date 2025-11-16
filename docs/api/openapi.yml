@@ -17,7 +17,7 @@ info:
     For async operations like comparison creation, you can receive real-time progress updates via ActionCable WebSocket.
 
     **WebSocket URL:**
-    - Production: `wss://reporeconnoiter.com/cable?token=<JWT>`
+    - Production: `wss://api.reporeconnoiter.com/cable?token=<JWT>`
     - Development: `ws://localhost:3001/cable?token=<JWT>`
 
     **Authentication:** Include JWT token as URL parameter: `?token=<JWT>`
@@ -26,7 +26,7 @@ info:
     ```javascript
     import { createConsumer } from '@rails/actioncable'
 
-    const cable = createConsumer('wss://reporeconnoiter.com/cable?token=JWT_TOKEN')
+    const cable = createConsumer('wss://api.reporeconnoiter.com/cable?token=JWT_TOKEN')
     const subscription = cable.subscriptions.create(
       { channel: 'ComparisonStatusChannel', session_id: 'uuid-from-create' },
       {

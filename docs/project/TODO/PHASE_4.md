@@ -107,8 +107,8 @@
 **Production Configuration**:
 - [x] Added ActionCable production config to `config/environments/production.rb`:
   ```ruby
-  config.action_cable.url = "wss://reporeconnoiter.com/cable"
-  config.action_cable.allowed_request_origins = [ "https://reporeconnoiter.com" ]
+  config.action_cable.url = "wss://api.reporeconnoiter.com/cable"
+  config.action_cable.allowed_request_origins = [ "https://reporeconnoiter.com", "https://www.reporeconnoiter.com" ]
   ```
 
 ### UI/UX Improvements

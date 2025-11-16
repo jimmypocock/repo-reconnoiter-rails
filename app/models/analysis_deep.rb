@@ -78,6 +78,7 @@ class AnalysisDeep < Analysis
     # @return [Boolean] true if user can create another analysis
     def user_can_create_today?(user)
       return false if user.nil?
+      return true if user.admin? # Admin users bypass rate limit
 
       count_for_user_today(user) < RATE_LIMIT_PER_USER
     end

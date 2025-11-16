@@ -94,7 +94,7 @@ post:
                 type: string
                 format: uri
                 description: WebSocket URL for real-time progress updates
-                example: "wss://reporeconnoiter.com/cable"
+                example: "wss://api.reporeconnoiter.com/cable"
               status_url:
                 type: string
                 format: uri

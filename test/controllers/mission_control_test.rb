@@ -109,12 +109,12 @@ class MissionControlTest < ActionDispatch::IntegrationTest
     MissionControl::Jobs::ApplicationController.class_eval do
       def require_admin!
         unless current_user
-          redirect_to main_app.root_path, alert: "You must be signed in to access this page."
+          redirect_to main_app.rails_health_check_path, alert: "You must be signed in to access this page."
           return
         end
 
         unless current_user.admin?
-          redirect_to main_app.root_path, alert: "You don't have permission to access this page."
+          redirect_to main_app.rails_health_check_path, alert: "You don't have permission to access this page."
         end
       end
     end

@@ -10,9 +10,21 @@
 #   )
 class AnalysisProgressChannel < ApplicationCable::Channel
   def subscribed
-    return reject unless current_user
-    return reject unless params[:session_id].present?
+    # Ensure session_id parameter is provided
+    session_id = params[:session_id]
 
-    stream_from "analysis_progress_#{params[:session_id]}"
+    if session_id.blank?
+      reject
+      return
+    end
+
+    # Stream from the analysis progress channel
+    # This receives broadcasts from AnalysisProgressBroadcaster
+    stream_from "analysis_progress_#{session_id}"
+  end
+
+  def unsubscribed
+    # Any cleanup needed when channel is unsubscribed
+    stop_all_streams
   end
 end

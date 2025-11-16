@@ -29,7 +29,7 @@ class AnalysisProgressBroadcaster
     payload = {
       type: "complete",
       repository_id: repository_id,
-      redirect_url: Rails.application.routes.url_helpers.repository_path(repository_id),
+      repository_url: Rails.application.routes.url_helpers.v1_repository_url(repository_id),
       message: "Deep analysis complete!",
       timestamp: Time.current.iso8601
     }

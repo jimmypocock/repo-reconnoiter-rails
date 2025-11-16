@@ -66,8 +66,12 @@ Rails.application.configure do
 
   # ActionCable configuration for production
   # Enable WebSocket connections for real-time progress updates
-  config.action_cable.url = "wss://reporeconnoiter.com/cable"
-  config.action_cable.allowed_request_origins = [ "https://reporeconnoiter.com" ]
+  config.action_cable.url = "wss://api.reporeconnoiter.com/cable"
+  config.action_cable.allowed_request_origins = [ "https://reporeconnoiter.com", "https://www.reporeconnoiter.com" ]
+
+  # Default URL options for url helpers (used in background jobs, mailers, etc.)
+  config.action_mailer.default_url_options = { host: "api.reporeconnoiter.com", protocol: "https" }
+  Rails.application.routes.default_url_options = { host: "api.reporeconnoiter.com", protocol: "https" }
 
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.

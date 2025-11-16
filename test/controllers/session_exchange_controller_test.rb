@@ -8,10 +8,10 @@ class SessionExchangeControllerTest < ActionDispatch::IntegrationTest
   end
 
   #--------------------------------------
-  # ADMIN PATH TESTS
+  # MISSION CONTROL ACCESS TESTS
   #--------------------------------------
 
-  test "admin can exchange JWT for session and access admin pages" do
+  test "admin can exchange JWT for session and access Mission Control" do
     jwt = JsonWebToken.encode({ user_id: @admin.id })
 
     get session_exchange_path(token: jwt, redirect: "/admin/jobs")
@@ -20,50 +20,22 @@ class SessionExchangeControllerTest < ActionDispatch::IntegrationTest
     assert_equal @admin.id, session["warden.user.user.key"][0][0]
   end
 
-  test "non-admin cannot access admin paths" do
+  test "non-admin cannot access Mission Control" do
     jwt = JsonWebToken.encode({ user_id: @non_admin.id })
 
     get session_exchange_path(token: jwt, redirect: "/admin/jobs")
 
-    assert_redirected_to root_path
-    assert_equal "Access denied", flash[:alert]
+    assert_response :forbidden
+    assert_equal "Access denied. Mission Control requires admin role.", response.body
   end
 
-  test "allows access to admin stats" do
+  test "rejects invalid redirect paths" do
     jwt = JsonWebToken.encode({ user_id: @admin.id })
 
     get session_exchange_path(token: jwt, redirect: "/admin/stats")
 
-    assert_redirected_to "/admin/stats"
-  end
-
-  test "allows access to admin users" do
-    jwt = JsonWebToken.encode({ user_id: @admin.id })
-
-    get session_exchange_path(token: jwt, redirect: "/admin/users")
-
-    assert_redirected_to "/admin/users"
-  end
-
-  #--------------------------------------
-  # AUTHENTICATED PATH TESTS
-  #--------------------------------------
-
-  test "authenticated user can access profile" do
-    jwt = JsonWebToken.encode({ user_id: @non_admin.id })
-
-    get session_exchange_path(token: jwt, redirect: "/profile")
-
-    assert_redirected_to "/profile"
-    assert_equal @non_admin.id, session["warden.user.user.key"][0][0]
-  end
-
-  test "authenticated user can access repositories" do
-    jwt = JsonWebToken.encode({ user_id: @non_admin.id })
-
-    get session_exchange_path(token: jwt, redirect: "/repositories")
-
-    assert_redirected_to "/repositories"
+    assert_response :bad_request
+    assert_includes response.body, "Invalid redirect path"
   end
 
   #--------------------------------------
@@ -73,15 +45,15 @@ class SessionExchangeControllerTest < ActionDispatch::IntegrationTest
   test "rejects missing token" do
     get session_exchange_path(redirect: "/admin/jobs")
 
-    assert_redirected_to root_path
-    assert_equal "Authentication required", flash[:alert]
+    assert_response :unauthorized
+    assert_equal "Authentication required", response.body
   end
 
   test "rejects invalid JWT" do
     get session_exchange_path(token: "invalid-jwt", redirect: "/admin/jobs")
 
-    assert_redirected_to root_path
-    assert_equal "Invalid or expired token", flash[:alert]
+    assert_response :unauthorized
+    assert_equal "Invalid or expired token", response.body
   end
 
   test "rejects expired JWT" do
@@ -89,8 +61,8 @@ class SessionExchangeControllerTest < ActionDispatch::IntegrationTest
 
     get session_exchange_path(token: jwt, redirect: "/admin/jobs")
 
-    assert_redirected_to root_path
-    assert_equal "Invalid or expired token", flash[:alert]
+    assert_response :unauthorized
+    assert_equal "Invalid or expired token", response.body
   end
 
   test "rejects non-whitelisted redirect paths" do
@@ -98,8 +70,8 @@ class SessionExchangeControllerTest < ActionDispatch::IntegrationTest
 
     get session_exchange_path(token: jwt, redirect: "/evil/path")
 
-    assert_redirected_to root_path
-    assert_equal "Invalid redirect path", flash[:alert]
+    assert_response :bad_request
+    assert_includes response.body, "Invalid redirect path"
   end
 
   test "rejects missing redirect parameter" do
@@ -107,16 +79,16 @@ class SessionExchangeControllerTest < ActionDispatch::IntegrationTest
 
     get session_exchange_path(token: jwt)
 
-    assert_redirected_to root_path
-    assert_equal "Invalid redirect path", flash[:alert]
+    assert_response :bad_request
+    assert_includes response.body, "Invalid redirect path"
   end
 
   test "rejects non-existent user" do
     jwt = JsonWebToken.encode({ user_id: 99999 })
 
-    get session_exchange_path(token: jwt, redirect: "/profile")
+    get session_exchange_path(token: jwt, redirect: "/admin/jobs")
 
-    assert_redirected_to root_path
-    assert_equal "User not found", flash[:alert]
+    assert_response :unauthorized
+    assert_equal "User not found", response.body
   end
 end

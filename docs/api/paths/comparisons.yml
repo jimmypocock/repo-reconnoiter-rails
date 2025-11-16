@@ -62,7 +62,7 @@ post:
                 type: string
                 format: uri
                 description: WebSocket URL for real-time progress updates
-                example: "wss://reporeconnoiter.com/cable"
+                example: "wss://api.reporeconnoiter.com/cable"
               status_url:
                 type: string
                 format: uri
@@ -71,7 +71,7 @@ post:
           example:
             session_id: "550e8400-e29b-41d4-a716-446655440000"
             status: "processing"
-            websocket_url: "wss://reporeconnoiter.com/cable"
+            websocket_url: "wss://api.reporeconnoiter.com/cable"
             status_url: "/api/v1/comparisons/status/550e8400-e29b-41d4-a716-446655440000"
     '400':
       description: Bad request (invalid query)

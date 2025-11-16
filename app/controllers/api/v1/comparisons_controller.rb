@@ -95,7 +95,7 @@ module Api
         case status_record.status
         when "completed"
           response[:comparison_id] = status_record.comparison_id
-          response[:comparison_url] = comparison_url(status_record.comparison_id)
+          response[:comparison_url] = v1_comparison_url(status_record.comparison_id)
         when "failed"
           response[:error_message] = status_record.error_message
         end
@@ -189,7 +189,7 @@ module Api
 
       def websocket_url
         if Rails.env.production?
-          "wss://reporeconnoiter.com/cable"
+          "wss://api.reporeconnoiter.com/cable"
         else
           "ws://localhost:3001/cable"
         end

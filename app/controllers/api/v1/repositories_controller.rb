@@ -326,7 +326,7 @@ module Api
 
       def websocket_url
         if Rails.env.production?
-          "wss://reporeconnoiter.com/cable"
+          "wss://api.reporeconnoiter.com/cable"
         else
           "ws://localhost:3001/cable"
         end
