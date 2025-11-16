@@ -109,8 +109,7 @@ module Api
           avatar_url: github_user.avatar_url,
           name: github_user.name
         }
-      rescue Octokit::Unauthorized, Octokit::Error => e
-        Rails.logger.warn("GitHub token verification failed: #{e.message}")
+      rescue Octokit::Unauthorized, Octokit::Error
         nil
       end
 

@@ -47,7 +47,7 @@ Rails.application.routes.draw do
 
   # Swagger UI for interactive API documentation
   # Access at: /api-docs (development and production)
-  mount Rswag::Ui::Engine => '/api-docs'
+  mount Rswag::Ui::Engine => "/api-docs"
 
   # Session exchange for Next.js → Rails seamless authentication
   # Allows JWT-authenticated users to access Mission Control (/admin/jobs)
